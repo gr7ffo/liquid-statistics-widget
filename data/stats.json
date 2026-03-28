@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Widget A",
+    "unit": "ms",
+    "points": [
+      { "timestamp": "2026-03-01", "value": 10 },
+      { "timestamp": "2026-03-02", "value": 15 }
+    ]
+  },
+  {
+    "title": "Widget B",
+    "unit": "requests/min",
+    "points": [
+      { "timestamp": "2026-03-01", "value": 90 },
+      { "timestamp": "2026-03-02", "value": 15 }
+    ]
+  }
+]

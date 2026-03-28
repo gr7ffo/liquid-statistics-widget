@@ -1,0 +1,35 @@
+{
+  "name": "csr-statistics-widget",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "tsx watch src/server.ts",
+    "dev:client": "esbuild public/app.ts --bundle --outfile=public/app.js --format=iife --watch",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "tsc -p tsconfig.json",
+    "build:client": "esbuild public/app.ts --bundle --outfile=public/app.js --format=iife --minify",
+    "start": "npm run build && node dist/server.js",
+    "lint": "eslint \"src/**/*.ts\" \"public/**/*.ts\"",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.11",
+    "concurrently": "^9.1.2",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.23.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.3",
+    "typescript-eslint": "^8.27.0",
+    "typescript": "^5.8.2"
+  }
+}

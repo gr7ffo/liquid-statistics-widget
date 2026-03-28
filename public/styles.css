@@ -1,0 +1,233 @@
+:root {
+  --bg-1: #081625;
+  --bg-2: #112f3a;
+  --glass: rgba(255, 255, 255, 0.12);
+  --glass-strong: rgba(255, 255, 255, 0.19);
+  --stroke: rgba(255, 255, 255, 0.26);
+  --text-main: #f5fbfb;
+  --text-soft: rgba(233, 248, 248, 0.78);
+  --accent-a: #61e4d2;
+  --accent-b: #f7ff72;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Sora", "Segoe UI", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(97, 228, 210, 0.18), transparent 36%),
+    radial-gradient(circle at 78% 0%, rgba(247, 255, 114, 0.2), transparent 30%),
+    linear-gradient(145deg, var(--bg-1), var(--bg-2));
+  overflow-x: hidden;
+}
+
+.ambient {
+  position: fixed;
+  width: 50vmax;
+  height: 50vmax;
+  border-radius: 50%;
+  filter: blur(68px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: drift 10s ease-in-out infinite alternate;
+}
+
+.ambient-a {
+  top: -14vmax;
+  left: -10vmax;
+  background: rgba(97, 228, 210, 0.16);
+}
+
+.ambient-b {
+  bottom: -20vmax;
+  right: -8vmax;
+  background: rgba(247, 255, 114, 0.14);
+  animation-delay: 1.5s;
+}
+
+.dashboard {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1rem 2.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.widget-shell {
+  display: grid;
+  gap: 0.8rem;
+  animation: floatIn 0.8s ease both;
+}
+
+.widget-heading {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(233, 248, 248, 0.86);
+}
+
+.glass-panel,
+.glass-card {
+  position: relative;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  backdrop-filter: blur(13px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 20px 35px rgba(3, 12, 20, 0.28);
+}
+
+.hero {
+  padding: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+h1 {
+  font-size: clamp(1.35rem, 4vw, 2rem);
+  margin-top: 0.3rem;
+}
+
+.subtitle {
+  margin-top: 0.45rem;
+  color: var(--text-soft);
+}
+
+.controls {
+  min-width: 200px;
+  display: grid;
+  gap: 0.4rem;
+  justify-items: end;
+}
+
+.controls label {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent-a);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.glass-card {
+  padding: 0.9rem 1rem;
+  animation: floatIn 0.8s ease both;
+}
+
+.glass-card p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.glass-card h2 {
+  margin-top: 0.4rem;
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.chart-grid .glass-panel {
+  padding: 0.85rem;
+  animation: floatIn 0.9s ease both;
+}
+
+.chart-grid h3 {
+  margin: 0.35rem 0 0.6rem;
+  color: var(--text-soft);
+  font-size: 1rem;
+}
+
+.chart {
+  min-height: 310px;
+}
+
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(2.2vmax, 3vmax) scale(1.08);
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .controls {
+    width: 100%;
+    justify-items: start;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .dashboard {
+    padding: 1rem 0.7rem 1.5rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
