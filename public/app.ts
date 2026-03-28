@@ -22,18 +22,16 @@ interface StatsResponse {
   };
 }
 
-declare global {
-  interface Window {
-    Plotly: {
-      newPlot: (
-        container: string | HTMLElement,
-        data: unknown[],
-        layout: Record<string, unknown>,
-        config?: Record<string, unknown>
-      ) => void;
-    };
-  }
+interface Plotly {
+  newPlot: (
+    container: string | HTMLElement,
+    data: unknown[],
+    layout: Record<string, unknown>,
+    config?: Record<string, unknown>
+  ) => void;
 }
+
+declare const Plotly: Plotly;
 
 const chartBaseLayout = {
   paper_bgcolor: "rgba(0,0,0,0)",
@@ -101,7 +99,7 @@ function renderLinePlot(data: StatsResponse, id: string): void {
     hovertemplate: `${threshold.label}: ${threshold.value} ${data.unit}<extra></extra>`
   }));
 
-  window.Plotly.newPlot(
+  Plotly.newPlot(
     `${id}-line`,
     [
       {
@@ -137,7 +135,7 @@ function renderHistogram(data: StatsResponse, id: string, binCount: number): voi
   const values = data.points.map((point) => point.value);
   const bins = createBins(values, binCount);
 
-  window.Plotly.newPlot(
+  Plotly.newPlot(
     `${id}-hist`,
     [
       {
@@ -217,17 +215,86 @@ function renderWidget(config: WidgetConfig, stats: StatsResponse): void {
   renderHistogram(stats, config.id, 5);
 }
 
+interface RawStatsPayload {
+  title?: string;
+  unit?: string;
+  thresholds?: Array<{
+    label?: string;
+    value: number;
+    color?: string;
+  }>;
+  points: Array<{
+    timestamp: string;
+    value: number;
+  }>;
+}
+
+function computeSummary(points: StatPoint[]) {
+  const values = points.map((point) => point.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+
+  return {
+    count: values.length,
+    min,
+    max,
+    avg: Number(avg.toFixed(2))
+  };
+}
+
+function normalizeThresholds(
+  thresholds: RawStatsPayload["thresholds"] | undefined
+): StatThreshold[] {
+  if (!thresholds) {
+    return [];
+  }
+
+  return thresholds.map((threshold, index) => {
+    if (!Number.isFinite(threshold.value)) {
+      throw new Error(`Threshold at index ${index} must include a finite numeric value.`);
+    }
+
+    return {
+      label: threshold.label?.trim() || `Threshold ${index + 1}`,
+      value: threshold.value,
+      color: threshold.color
+    };
+  });
+}
+
+function processStatsData(raw: RawStatsPayload[]): StatsResponse[] {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    throw new Error("Stats data must be a non-empty array.");
+  }
+
+  return raw.map((entry) => {
+    if (!entry.points || entry.points.length === 0) {
+      throw new Error("Each stats item must include non-empty points data.");
+    }
+
+    return {
+      title: entry.title ?? "Statistics",
+      unit: entry.unit ?? "units",
+      thresholds: normalizeThresholds(entry.thresholds),
+      points: entry.points,
+      summary: computeSummary(entry.points)
+    };
+  });
+}
+
 async function bootstrap(): Promise<void> {
-  const response = await fetch("/api/stats");
+  const response = await fetch("/stats.json");
 
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`);
   }
 
-  const statsItems = (await response.json()) as StatsResponse[];
+  const rawData = (await response.json()) as RawStatsPayload[];
+  const statsItems = processStatsData(rawData);
 
   if (!Array.isArray(statsItems) || statsItems.length === 0) {
-    throw new Error("API returned no widget datasets.");
+    throw new Error("No widget datasets available.");
   }
 
   const dashboard = document.getElementById("dashboard") as HTMLElement;

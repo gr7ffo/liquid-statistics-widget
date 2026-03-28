@@ -4,15 +4,14 @@ import tseslint from "typescript-eslint";
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**", "public/app.js"]
+    ignores: ["dist/**", "node_modules/**", "public/app.js", "data/**"]
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["src/**/*.ts", "public/**/*.ts"],
+    files: ["public/**/*.ts"],
     languageOptions: {
       globals: {
-        ...globals.node,
         ...globals.browser
       }
     },

@@ -1,15 +1,17 @@
-# Liquid Glass Statistics Widget (TypeScript + Node)
+# Liquid Glass Statistics Widget
 
-Interactive local widget that reads from a JSON file and renders:
+Interactive single page application that reads from a JSON file and renders:
 
-- Line plot
-- Histogram with live bin slider
+- Line plot with threshold indicators
+- Histogram with frequency distribution
 - Summary statistics cards
-- Any number of stacked widgets from one array
+- Multiple stacked widgets from one data array
 
 ## Requirements
 
-- Node.js 20+
+- Node.js 20+ (for development)
+- Any modern web browser
+- No backend server required!
 
 ## Quick start
 
@@ -18,31 +20,37 @@ npm install
 npm run dev
 ```
 
-Open: http://localhost:3000
+This will start esbuild's development server. Open: http://localhost:3000
 
-## Build and start
+## Build for production
 
-Build only:
+Build the optimized bundle:
 
 ```bash
 npm run build
 ```
 
-Build and run server:
+The `public/` folder contains everything you need. You can:
+
+- Open `public/index.html` directly in your browser
+- Deploy the `public/` folder to any static hosting (GitHub Pages, Netlify, Vercel, etc.)
+- Serve it with any static file server
+
+## Preview production build
 
 ```bash
-npm start
+npm run preview
 ```
 
 ## Code quality checks
 
-Run lint rules (including cognitive complexity thresholds):
+Run lint rules:
 
 ```bash
 npm run lint
 ```
 
-Run type checking only:
+Run type checking:
 
 ```bash
 npm run typecheck
@@ -60,9 +68,9 @@ Auto-fix formatting:
 npm run format:write
 ```
 
-## JSON shape
+## Data format
 
-Edit data/stats.json using this array structure:
+Edit `public/stats.json` using this array structure:
 
 ```json
 [
@@ -91,23 +99,18 @@ Edit data/stats.json using this array structure:
 
 Notes:
 
-- Each object in the array becomes one widget on the page.
-- Widget order in the UI follows array order in data/stats.json.
-- points must be non-empty for every widget object.
-- thresholds is optional. If provided, each threshold needs a numeric value and can include optional label and color.
+- Each object in the array becomes one widget on the page
+- Widget order in the UI follows array order in stats.json
+- `points` must be non-empty for every widget object
+- `thresholds` is optional. If provided, each threshold needs a numeric value and can include optional label and color
+- `title` defaults to "Statistics" if not provided
+- `unit` defaults to "units" if not provided
 
-## Use another file path
+## Architecture
 
-Command Prompt:
+This is a pure client-side single page application:
 
-```bash
-set STATS_FILE=d:\\path\\to\\your\\stats.json
-npm run dev
-```
-
-PowerShell:
-
-```powershell
-$env:STATS_FILE = "D:\\path\\to\\your\\stats.json"
-npm run dev
-```
+- No backend server needed
+- All data processing happens in the browser
+- Built with vanilla TypeScript and Plotly.js
+- Styled with custom CSS (glassmorphism design)
