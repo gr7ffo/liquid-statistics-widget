@@ -3,9 +3,16 @@ interface StatPoint {
   value: number;
 }
 
+interface StatThreshold {
+  label: string;
+  value: number;
+  color?: string;
+}
+
 interface StatsResponse {
   title: string;
   unit: string;
+  thresholds: StatThreshold[];
   points: StatPoint[];
   summary: {
     count: number;
@@ -63,8 +70,13 @@ function createBins(values: number[], binCount: number): { mid: number[]; counts
 function renderSummary(data: StatsResponse, id: string): void {
   const unit = data.unit;
   (document.getElementById(`${id}-title`) as HTMLElement).textContent = data.title;
-  (document.getElementById(`${id}-subtitle`) as HTMLElement).textContent =
-    `Unit: ${unit} • Interactive histogram bins`;
+  (document.getElementById(`${id}-subtitle`) as HTMLElement).textContent = `Unit: ${unit}`;
+
+  const thresholdsText = data.thresholds.length
+    ? `Thresholds: ${data.thresholds.map((threshold) => `${threshold.label} ${threshold.value} ${unit}`).join(" • ")}`
+    : "Thresholds: none";
+  (document.getElementById(`${id}-thresholds`) as HTMLElement).textContent = thresholdsText;
+
   (document.getElementById(`${id}-count`) as HTMLElement).textContent = String(data.summary.count);
   (document.getElementById(`${id}-avg`) as HTMLElement).textContent = `${data.summary.avg} ${unit}`;
   (document.getElementById(`${id}-min`) as HTMLElement).textContent = `${data.summary.min} ${unit}`;
@@ -74,6 +86,20 @@ function renderSummary(data: StatsResponse, id: string): void {
 function renderLinePlot(data: StatsResponse, id: string): void {
   const values = data.points.map((point) => point.value);
   const times = data.points.map((point) => point.timestamp);
+  const thresholdPalette = ["#ffbf69", "#ff6b6b", "#7bdff2", "#b2f7ef"];
+  const thresholdLines = data.thresholds.map((threshold, index) => ({
+    x: times,
+    y: new Array(times.length).fill(threshold.value),
+    type: "scatter",
+    mode: "lines",
+    name: threshold.label,
+    line: {
+      color: threshold.color ?? thresholdPalette[index % thresholdPalette.length],
+      width: 2,
+      dash: "dot"
+    },
+    hovertemplate: `${threshold.label}: ${threshold.value} ${data.unit}<extra></extra>`
+  }));
 
   window.Plotly.newPlot(
     `${id}-line`,
@@ -85,11 +111,21 @@ function renderLinePlot(data: StatsResponse, id: string): void {
         mode: "lines+markers",
         line: { color: "#61e4d2", width: 3, shape: "spline" },
         marker: { size: 6, color: "#f7ff72", line: { width: 1, color: "#1f2d35" } },
+        name: data.title,
         hovertemplate: "%{x}<br>%{y:.2f}<extra></extra>"
-      }
+      },
+      ...thresholdLines
     ],
     {
       ...chartBaseLayout,
+      showlegend: thresholdLines.length > 0,
+      legend: {
+        orientation: "h",
+        yanchor: "bottom",
+        y: 1.02,
+        xanchor: "right",
+        x: 1
+      },
       xaxis: { gridcolor: "rgba(255,255,255,0.11)", title: "Time" },
       yaxis: { gridcolor: "rgba(255,255,255,0.11)", title: data.unit }
     },
@@ -138,9 +174,9 @@ function createWidgetShell(config: WidgetConfig): HTMLElement {
     <h2 class="widget-heading">${config.heading}</h2>
     <section class="hero glass-panel">
       <div>
-        <p class="eyebrow">Interactive Data Surface</p>
         <h1 id="${config.id}-title">Liquid Glass Statistics</h1>
         <p id="${config.id}-subtitle" class="subtitle">Loading data...</p>
+        <p id="${config.id}-thresholds" class="subtitle thresholds">Thresholds: none</p>
       </div>
       <div class="controls">
         <label for="${config.id}-bin">Histogram bins <span id="${config.id}-bin-value">14</span></label>

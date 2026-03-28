@@ -69,6 +69,10 @@ Edit data/stats.json using this array structure:
   {
     "title": "Widget A",
     "unit": "ms",
+    "thresholds": [
+      { "label": "Warn", "value": 80 },
+      { "label": "Critical", "value": 100, "color": "#ff6b6b" }
+    ],
     "points": [
       { "timestamp": "2026-03-01", "value": 10.5 },
       { "timestamp": "2026-03-02", "value": 12.1 }
@@ -90,6 +94,7 @@ Notes:
 - Each object in the array becomes one widget on the page.
 - Widget order in the UI follows array order in data/stats.json.
 - points must be non-empty for every widget object.
+- thresholds is optional. If provided, each threshold needs a numeric value and can include optional label and color.
 
 ## Use another file path
 

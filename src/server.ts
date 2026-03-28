@@ -6,6 +6,11 @@ import fs from "node:fs/promises";
 interface StatsPayload {
   title?: string;
   unit?: string;
+  thresholds?: Array<{
+    label?: string;
+    value: number;
+    color?: string;
+  }>;
   points: Array<{
     timestamp: string;
     value: number;
@@ -41,6 +46,24 @@ function assertPoints(
   }
 }
 
+function normalizeThresholds(thresholds: StatsPayload["thresholds"] | undefined) {
+  if (!thresholds) {
+    return [];
+  }
+
+  return thresholds.map((threshold, index) => {
+    if (!Number.isFinite(threshold.value)) {
+      throw new Error(`Threshold at index ${index} must include a finite numeric value.`);
+    }
+
+    return {
+      label: threshold.label?.trim() || `Threshold ${index + 1}`,
+      value: threshold.value,
+      color: threshold.color
+    };
+  });
+}
+
 function normalizeStatsItem(entry: StatsPayload) {
   const points = entry.points;
   assertPoints(points);
@@ -48,6 +71,7 @@ function normalizeStatsItem(entry: StatsPayload) {
   return {
     title: entry.title ?? "Statistics",
     unit: entry.unit ?? "units",
+    thresholds: normalizeThresholds(entry.thresholds),
     points,
     summary: computeSummary(points)
   };

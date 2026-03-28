@@ -122,6 +122,11 @@ h1 {
   color: var(--text-soft);
 }
 
+.thresholds {
+  margin-top: 0.2rem;
+  font-size: 0.86rem;
+}
+
 .controls {
   min-width: 200px;
   display: grid;
