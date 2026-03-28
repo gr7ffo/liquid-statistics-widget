@@ -171,16 +171,11 @@ function createWidgetShell(config: WidgetConfig): HTMLElement {
   const wrapper = document.createElement("section");
   wrapper.className = "widget-shell";
   wrapper.innerHTML = `
-    <h2 class="widget-heading">${config.heading}</h2>
     <section class="hero glass-panel">
       <div>
         <h1 id="${config.id}-title">Liquid Glass Statistics</h1>
         <p id="${config.id}-subtitle" class="subtitle">Loading data...</p>
         <p id="${config.id}-thresholds" class="subtitle thresholds">Thresholds: none</p>
-      </div>
-      <div class="controls">
-        <label for="${config.id}-bin">Histogram bins <span id="${config.id}-bin-value">14</span></label>
-        <input id="${config.id}-bin" type="range" min="5" max="40" value="14" />
       </div>
     </section>
     <section class="summary-grid">
@@ -216,24 +211,10 @@ function createWidgetShell(config: WidgetConfig): HTMLElement {
   return wrapper;
 }
 
-function bindControls(data: StatsResponse, id: string): void {
-  const slider = document.getElementById(`${id}-bin`) as HTMLInputElement;
-  const label = document.getElementById(`${id}-bin-value`) as HTMLElement;
-
-  slider.addEventListener("input", () => {
-    const bins = Number(slider.value);
-    label.textContent = String(bins);
-    renderHistogram(data, id, bins);
-  });
-}
-
 function renderWidget(config: WidgetConfig, stats: StatsResponse): void {
   renderSummary(stats, config.id);
   renderLinePlot(stats, config.id);
-
-  const bins = Number((document.getElementById(`${config.id}-bin`) as HTMLInputElement).value);
-  renderHistogram(stats, config.id, bins);
-  bindControls(stats, config.id);
+  renderHistogram(stats, config.id, 5);
 }
 
 async function bootstrap(): Promise<void> {
