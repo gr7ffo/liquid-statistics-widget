@@ -283,20 +283,26 @@ function processStatsData(raw: RawStatsPayload[]): StatsResponse[] {
   });
 }
 
-async function bootstrap(): Promise<void> {
-  const response = await fetch("/stats.json");
+function clearDashboard(): void {
+  const dashboard = document.getElementById("dashboard") as HTMLElement;
+  dashboard.innerHTML = "";
+}
 
-  if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`);
-  }
+function displayError(message: string): void {
+  const dashboard = document.getElementById("dashboard") as HTMLElement;
+  dashboard.innerHTML = "";
+  const panel = document.createElement("section");
+  panel.className = "hero glass-panel";
+  panel.innerHTML = `<p class="subtitle">❌ ${message}</p>`;
+  dashboard.appendChild(panel);
+}
 
-  const rawData = (await response.json()) as RawStatsPayload[];
-  const statsItems = processStatsData(rawData);
-
+function renderDashboard(statsItems: StatsResponse[]): void {
   if (!Array.isArray(statsItems) || statsItems.length === 0) {
     throw new Error("No widget datasets available.");
   }
 
+  clearDashboard();
   const dashboard = document.getElementById("dashboard") as HTMLElement;
 
   for (let index = 0; index < statsItems.length; index += 1) {
@@ -310,10 +316,79 @@ async function bootstrap(): Promise<void> {
   }
 }
 
+async function loadDefaultData(): Promise<void> {
+  const response = await fetch("/stats.json");
+
+  if (!response.ok) {
+    throw new Error(`Failed to load default data: ${response.status}`);
+  }
+
+  const rawData = (await response.json()) as RawStatsPayload[];
+  const statsItems = processStatsData(rawData);
+  renderDashboard(statsItems);
+}
+
+function handleFileUpload(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.name.endsWith(".json")) {
+    displayError("Please upload a valid JSON file.");
+    input.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    try {
+      const content = e.target?.result as string;
+      const rawData = JSON.parse(content) as RawStatsPayload[];
+      const statsItems = processStatsData(rawData);
+      renderDashboard(statsItems);
+      input.value = "";
+    } catch (error) {
+      displayError(
+        `Failed to process file: ${error instanceof Error ? error.message : "Invalid JSON format"}`
+      );
+      input.value = "";
+    }
+  };
+
+  reader.onerror = () => {
+    displayError("Failed to read file. Please try again.");
+    input.value = "";
+  };
+
+  reader.readAsText(file);
+}
+
+function setupEventListeners(): void {
+  const fileInput = document.getElementById("file-upload") as HTMLInputElement;
+  const resetButton = document.getElementById("reset-button") as HTMLButtonElement;
+
+  fileInput.addEventListener("change", handleFileUpload);
+
+  resetButton.addEventListener("click", () => {
+    loadDefaultData().catch((error) => {
+      displayError(
+        `Failed to load default data: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
+    });
+  });
+}
+
+async function bootstrap(): Promise<void> {
+  setupEventListeners();
+  await loadDefaultData();
+}
+
 bootstrap().catch((error) => {
-  const dashboard = document.getElementById("dashboard") as HTMLElement;
-  const panel = document.createElement("section");
-  panel.className = "hero glass-panel";
-  panel.innerHTML = `<p class="subtitle">Failed to load data: ${error instanceof Error ? error.message : "Unknown error"}</p>`;
-  dashboard.appendChild(panel);
+  displayError(
+    `Failed to initialize: ${error instanceof Error ? error.message : "Unknown error"}`
+  );
 });

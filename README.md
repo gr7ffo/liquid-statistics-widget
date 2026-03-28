@@ -6,6 +6,7 @@ Interactive single page application that reads from a JSON file and renders:
 - Histogram with frequency distribution
 - Summary statistics cards
 - Multiple stacked widgets from one data array
+- **File upload functionality** - load custom data files on the fly!
 
 ## Requirements
 
@@ -20,7 +21,21 @@ npm install
 npm run dev
 ```
 
-This will start esbuild's development server. Open: http://localhost:3000
+This will start esbuild's development server. Open: http://localhost:8000
+
+## Features
+
+### 📤 Upload Custom Data
+Click the "Upload Custom Data" button in the header to load your own stats.json file directly from your computer. No need to replace files manually!
+
+### 🔄 Reset to Default
+Click the "Reset" button to reload the default data file.
+
+### 📊 Dynamic Rendering
+The dashboard automatically updates when you upload new data files.
+
+### 🧪 Try it Out
+An example custom data file is included at `public/example-custom-data.json` - try uploading it to see the upload feature in action!
 
 ## Build for production
 

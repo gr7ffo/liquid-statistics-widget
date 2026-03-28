@@ -18,6 +18,30 @@
     <div class="ambient ambient-a"></div>
     <div class="ambient ambient-b"></div>
 
+    <header class="upload-bar glass-panel">
+      <div class="upload-content">
+        <h2>Liquid Glass Statistics</h2>
+        <div class="upload-controls">
+          <label for="file-upload" class="upload-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Upload Custom Data
+          </label>
+          <input type="file" id="file-upload" accept="application/json,.json" />
+          <button id="reset-button" class="reset-button" title="Load default data">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
     <main class="dashboard" id="dashboard"></main>
   </body>
 </html>

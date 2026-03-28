@@ -1,0 +1,51 @@
+[
+  {
+    "title": "Response Time",
+    "unit": "ms",
+    "thresholds": [
+      { "label": "Acceptable", "value": 150, "color": "#ffbf69" },
+      { "label": "Slow", "value": 300, "color": "#ff6b6b" }
+    ],
+    "points": [
+      { "timestamp": "2026-03-21", "value": 120 },
+      { "timestamp": "2026-03-22", "value": 135 },
+      { "timestamp": "2026-03-23", "value": 145 },
+      { "timestamp": "2026-03-24", "value": 178 },
+      { "timestamp": "2026-03-25", "value": 210 },
+      { "timestamp": "2026-03-26", "value": 195 },
+      { "timestamp": "2026-03-27", "value": 160 },
+      { "timestamp": "2026-03-28", "value": 140 }
+    ]
+  },
+  {
+    "title": "Memory Usage",
+    "unit": "GB",
+    "thresholds": [
+      { "label": "High", "value": 8, "color": "#ff6b6b" }
+    ],
+    "points": [
+      { "timestamp": "2026-03-21", "value": 4.2 },
+      { "timestamp": "2026-03-22", "value": 5.1 },
+      { "timestamp": "2026-03-23", "value": 6.3 },
+      { "timestamp": "2026-03-24", "value": 7.8 },
+      { "timestamp": "2026-03-25", "value": 8.5 },
+      { "timestamp": "2026-03-26", "value": 7.2 },
+      { "timestamp": "2026-03-27", "value": 6.0 },
+      { "timestamp": "2026-03-28", "value": 5.5 }
+    ]
+  },
+  {
+    "title": "Active Users",
+    "unit": "users",
+    "points": [
+      { "timestamp": "2026-03-21", "value": 523 },
+      { "timestamp": "2026-03-22", "value": 678 },
+      { "timestamp": "2026-03-23", "value": 834 },
+      { "timestamp": "2026-03-24", "value": 912 },
+      { "timestamp": "2026-03-25", "value": 1045 },
+      { "timestamp": "2026-03-26", "value": 987 },
+      { "timestamp": "2026-03-27", "value": 876 },
+      { "timestamp": "2026-03-28", "value": 945 }
+    ]
+  }
+]
