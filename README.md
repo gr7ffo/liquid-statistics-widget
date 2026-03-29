@@ -25,6 +25,9 @@ This will start esbuild's development server. Open: http://localhost:8000
 
 ## Features
 
+### 🔒 Privacy First
+**Your data never leaves your machine!** All file processing happens entirely in your browser using the FileReader API. No uploads, no tracking, no external servers.
+
 ### 📤 Upload Custom Data
 Click the "Upload Custom Data" button in the header to load your own stats.json file directly from your computer. No need to replace files manually!
 
@@ -50,6 +53,40 @@ The `public/` folder contains everything you need. You can:
 - Open `public/index.html` directly in your browser
 - Deploy the `public/` folder to any static hosting (GitHub Pages, Netlify, Vercel, etc.)
 - Serve it with any static file server
+
+## Deploy to GitHub Pages
+
+This repository includes a GitHub Actions workflow that automatically builds and deploys to GitHub Pages.
+
+### Setup
+
+1. **Enable GitHub Pages** in your repository:
+   - Go to **Settings** → **Pages**
+   - Under **Source**, select **GitHub Actions**
+   - Save the settings
+
+2. **Push to main branch**:
+   ```bash
+   git push origin main
+   ```
+
+The workflow will automatically:
+- Install dependencies
+- Build the production bundle (`npm run build`)
+- Deploy the `public/` folder to GitHub Pages
+
+Your site will be available at: `https://<username>.github.io/<repo-name>/`
+
+### Manual Deployment
+
+You can also trigger deployment manually:
+- Go to the **Actions** tab
+- Select **Deploy static content to Pages**
+- Click **Run workflow**
+
+### Important: Path Configuration
+
+This project uses **relative paths** (`./app.js`, `./styles.css`, `./stats.json`) instead of absolute paths (`/app.js`) to ensure compatibility with GitHub Pages subdirectory deployment. If you host on a custom domain or at the root path, relative paths will still work correctly.
 
 ## Preview production build
 
