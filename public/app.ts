@@ -317,7 +317,7 @@ function renderDashboard(statsItems: StatsResponse[]): void {
 }
 
 async function loadDefaultData(): Promise<void> {
-  const response = await fetch("/stats.json");
+  const response = await fetch("./stats.json");
 
   if (!response.ok) {
     throw new Error(`Failed to load default data: ${response.status}`);
